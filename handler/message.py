@@ -55,3 +55,27 @@ async def echo(message: Message):
                 await message.answer(f"При выборе персонажа нажмите подтвердить")
         else:
             await message.answer(f"Начните игру /start")
+    elif msg == 'статистика':
+        if result != None:
+            if result[4] == 'true':
+                cur.execute("SELECT * FROM dungeon_safe WHERE name = ?", (message.from_user.id,))
+                result_dangoen = cur.fetchone()
+                
+                # Получение всех NPC для пользователя
+                cur.execute("SELECT name_npc, mood FROM action_player_npc WHERE name = ?", (message.from_user.id,))
+                all_npcs = cur.fetchall()
+                
+                # Формирование ответа
+                answer_text = f"Ваш персонаж: {result[3]}\nВаши предметы: {result[8]}\nВаш уровень здоровья:{result_dangoen[2]}\n\n**Список персонажей с кем вы контактировали и их доверие:**\n"
+                if all_npcs:
+                    for npc in all_npcs:
+                        answer_text += f"- {npc[0]} доверие - {npc[1]}\n"
+                else:
+                    answer_text += "- Нет активных NPC\n"
+                
+                await message.answer(answer_text)
+            else:
+                await message.answer(f"При выборе персонажа нажмите подтвердить")
+        else:
+            await message.answer(f"Начните игру /start")
+                

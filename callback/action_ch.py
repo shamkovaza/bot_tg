@@ -45,9 +45,7 @@ async def pagination_handler( call: CallbackQuery, callback_data: fabric.Paginat
         elif callback_data.action == "gift":
             rand_item_for = ['Лунный камень', 'Лесной сапфир', 'Корни жизни']
             random_element = random.choice(rand_item_for)
-            print(result_npc[1])
             if result_npc[4] == None or result_npc[4] == '':
-                print("nones")
                 cur_npc.execute("UPDATE action_player_npc SET item = ? WHERE name = ? AND name_npc = ?", (random_element, call.from_user.id, result[6],))
                 db.commit()
                 cur_npc.execute("SELECT * FROM action_player_npc WHERE name = ? AND name_npc = ?", (call.from_user.id, result[6]))
@@ -59,11 +57,11 @@ async def pagination_handler( call: CallbackQuery, callback_data: fabric.Paginat
                 if result_npc[4] in item:
                     cur_npc.execute("SELECT * FROM action_player_npc WHERE name = ? AND name_npc = ?", (call.from_user.id, result[6]))
                     result_npc = cur_npc.fetchone()
-                    mood_r = random.randint(1, 10)
+                    mood_r = random.randint(1, 10) 
                     mood = result_npc[3] + mood_r
                     with suppress(TelegramBadRequest):
                         await call.message.edit_text(
-                            f"Вы подарили персонажу {result_npc[2]} {result_npc[4]} и получили {mood_r} доверия.",
+                            f"Вы подарили персонажу {result_npc[2]} {result_npc[4]} и получили {mood_r} доверия.\n Доверия к этому персонажу составляет {mood}",
                                 reply_markup=fabric.paginator_action_ch()
                             ) 
                     cur_npc.execute("UPDATE action_player_npc SET item = ?, mood = ? WHERE name = ? AND name_npc = ?", ('', mood, call.from_user.id, result[6],))
