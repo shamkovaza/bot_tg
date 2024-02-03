@@ -19,7 +19,7 @@ async def pagination_handler( call: CallbackQuery, callback_data: fabric.Paginat
     cur_npc = db.cursor()
     cur_npc.execute("SELECT * FROM action_player_npc WHERE name = ? AND name_npc = ?", (call.from_user.id, result[6]))
     result_npc = cur_npc.fetchone()
-    if result == None or result[6] != 'false':
+    if result == None or result[6] == 'false':
         await call.message.answer(f"Отправьте мне 'Начать игру'", reply_markup=reply.main)
     else:
         if callback_data.action == "talk":
