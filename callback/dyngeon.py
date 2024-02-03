@@ -51,12 +51,15 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
                                 event = result_event[random_].split('; ')
                                 _heal_false = result_safe[2]
                                 if event[0] == 'false':
-                                    _heal_false -= random.randint(1, 70)
-                                    cur_safe.execute("UPDATE dungeon_safe SET heal = ? WHERE name = ?", (_heal_false, call.from_user.id,))
+                                    _heal_info = random.randint(1, 70)
+                                    _heal_false_up = _heal_false - _heal_info
+                                    cur_safe.execute("UPDATE dungeon_safe SET heal = ? WHERE name = ?", (_heal_false_up, call.from_user.id,))
                                     db.commit()
+                                    cur_safe.execute("SELECT * FROM dungeon_safe WHERE name = ?", (call.from_user.id,))
+                                    result_safe = cur_safe.fetchone()
                                     with suppress(TelegramBadRequest):
                                         await call.message.edit_text(
-                                            f"{event[1]} \n Вы потеряли {_heal_false} \n Ваш уровень здоровья {result_safe[2]}",
+                                            f"{event[1]} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
                                             reply_markup=fabric.paginator_dungeon()
                                         ) 
                                 else:
