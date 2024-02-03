@@ -27,6 +27,11 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
         if result_safe == None:
             cur_safe.execute("INSERT INTO dungeon_safe (name, heal, record, battle_npc, battle_npc_heal) VALUES (?, ?, ?, ?, ?)", (call.from_user.id, 100, 0, '', 0))
             db.commit()
+            with suppress(TelegramBadRequest):
+                await call.message.edit_text(
+                    f"Происходит подготовка данных подземелья, нажмите ещё раз кнопку.",
+                    reply_markup=fabric.paginator_dungeon()
+                ) 
         else:
             if result[4] != 'false':
                 if callback_data.action == "next":

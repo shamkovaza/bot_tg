@@ -52,8 +52,15 @@ async def pagination_choose( call: CallbackQuery, callback_data: fabric.Paginati
             db.commit()
             db.close()
         elif callback_data.action == "accept":
-            await call.message.answer(f"Вы подходите к персонажу {result[6]}", reply_markup=fabric.paginator_action_ch())
-            cur.execute("UPDATE users SET choose_npc_is = ? WHERE name = ?", ('true', call.from_user.id,))
-            db.commit()
+            if result[6] != 'false':
+                await call.message.answer(f"Вы подходите к персонажу {result[6]}", reply_markup=fabric.paginator_action_ch())
+                cur.execute("UPDATE users SET choose_npc_is = ? WHERE name = ?", ('true', call.from_user.id,))
+                db.commit()
+            else:
+                with suppress(TelegramBadRequest):
+                    await call.message.edit_text(
+                        f"Выберите персонажа к которому хотите подойти.",
+                        reply_markup=fabric.paginator_choose()
+                    )
     db.close()
     await call.answer()

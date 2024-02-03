@@ -42,7 +42,7 @@ def paginator_choose(page: int=0):
         InlineKeyboardButton(text="Говорить с персонажем", callback_data=PaginationChoose(action="accept", page=page).pack()),
         # InlineKeyboardButton(text="Кот", callback_data=Pagination(action="cat", page=page).pack()),
         # InlineKeyboardButton(text="Подтвердить", callback_data=Pagination(action="accept", page=page).pack()),
-        width=3
+        width=2
     )
     return builder.as_markup()
 
