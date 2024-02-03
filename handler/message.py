@@ -32,6 +32,8 @@ async def echo(message: Message):
         await message.answer("Вы начали игру")
     elif msg == 'меню игры':
         await message.answer('Вы открыли меню игры', reply_markup=reply.game)
+    elif msg == 'о боте':
+        await message.answer('Бот🦊 предоставляет маленькую новеллу с различными персонажами с которыми вы можете взаимодействовать.', reply_markup=reply.main)
     elif msg == 'выбрать персонажа':
         await message.answer('Выберите персонажа', reply_markup=fabric.paginator())
     elif msg == 'кто рядом':

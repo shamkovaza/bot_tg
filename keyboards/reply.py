@@ -13,8 +13,7 @@ main = ReplyKeyboardMarkup(
             KeyboardButton(text="Меню игры")
         ],
         [
-            KeyboardButton(text="О боте"),
-            KeyboardButton(text="Спец. кнопки")
+            KeyboardButton(text="О боте")
         ]
     ],
     resize_keyboard=True,
