@@ -159,7 +159,6 @@ async def pagination_handler( call: CallbackQuery, callback_data: fabric.Paginat
                                     reply_markup=fabric.paginator_action_ch()
                                 ) #10
                     else:
-                        print(relationsh[0], result_act[5])
                         with suppress(TelegramBadRequest):
                             await call.message.edit_text(
                                 f"Недостаточно романтической связи с этим персонажем.",
