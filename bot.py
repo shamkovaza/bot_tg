@@ -1,7 +1,7 @@
 import asyncio
 from aiogram import Bot, Dispatcher, Router
 from handler import commands, message
-from callback import pagination, choose_npc, action_ch, dyngeon
+from callback import pagination, choose_npc, action_ch, dyngeon, rem_bf
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -16,6 +16,7 @@ async def main():
         choose_npc.router,
         action_ch.router,
         dyngeon.router,
+        rem_bf.router,
         message.router
     )
 
