@@ -150,9 +150,11 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
                         item.remove('Лечебные ягоды')
                         cur.execute("UPDATE users SET items = ? WHERE name = ?", (', '.join(item), call.from_user.id,))
                         db.commit()
+                        cur.execute("SELECT heal FROM dungeon_safe WHERE name = ?", (call.from_user.id,))
+                        res_heal = cur.fetchone()
                         with suppress(TelegramBadRequest):
                             await call.message.edit_text(
-                                f"Вы восстановили {r_heal} здоровья.\n Ваш уровень здоровья составляет: {result_safe[2]}",
+                                f"Вы восстановили {r_heal} здоровья.\n Ваш уровень здоровья составляет: {res_heal[0]}",
                                 reply_markup=fabric.paginator_dungeon()
                             )
                     else:
