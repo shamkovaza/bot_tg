@@ -37,7 +37,47 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
                 if callback_data.action == "next":
                     if result_safe[5] <= 0:
                         if result_safe[2] >= 1:
-                            battle = random.randint(0, 1)
+                            battle = random.randint(0, 2)
+                            if battle == 2:
+                                cur.execute("SELECT name FROM npc")
+                                names = [name[0] for name in cur.fetchall()]
+                                rand_npc_for = names
+                                r_npc = random.choice(rand_npc_for)
+                                cur.execute("SELECT mood FROM action_player_npc WHERE name = ? AND name_npc = ?", (call.from_user.id, r_npc,))
+                                res_mood = cur.fetchone()
+                                if res_mood is not None:
+                                    random_dialog = random.randint(0, 1)
+                                    if res_mood[0] >= 15:
+                                        cur.execute("SELECT dialog_inDangeon_true FROM npc WHERE name = ?", (r_npc,))
+                                        res_dialog_true = cur.fetchone()
+                                        dialog = res_dialog_true[0].split('; ')
+                                        _heal_ = result_safe[2] 
+                                        _heal_up = random.randint(1, 35)
+                                        _heal_update_up = _heal_ + _heal_up
+                                        cur_safe.execute("UPDATE dungeon_safe SET heal = ? WHERE name = ?", (_heal_update_up, call.from_user.id,))
+                                        db.commit()
+                                        cur_safe.execute("SELECT heal FROM dungeon_safe WHERE name = ?", (call.from_user.id,))
+                                        result_heal = cur_safe.fetchone()
+                                        with suppress(TelegramBadRequest):
+                                            await call.message.edit_text(
+                                                f"{dialog[random_dialog]} \n Вы получили {_heal_up} здоровья \n Уровень здоровье: {result_heal[0]}",
+                                                reply_markup=fabric.paginator_dungeon()
+                                            ) 
+                                    else:
+                                        cur.execute("SELECT dialog_inDangeon_false FROM npc WHERE name = ?", (r_npc,))
+                                        res_dialog_false = cur.fetchone()
+                                        dialog = res_dialog_false[0].split('; ')
+                                        with suppress(TelegramBadRequest):
+                                            await call.message.edit_text(
+                                                f"{dialog[random_dialog]} \n Вы ничего не получили.",
+                                                reply_markup=fabric.paginator_dungeon()
+                                            ) 
+                                else:
+                                    with suppress(TelegramBadRequest):
+                                        await call.message.edit_text(
+                                            f"Вы никого не обнаружили на своём пути.",
+                                            reply_markup=fabric.paginator_dungeon()
+                                        ) 
                             if battle == 1:
                                 cur.execute("SELECT * FROM info_battle_npc WHERE id = ?", (random.randint(1, 6),))
                                 res_npcfor_btl = cur.fetchone()
@@ -49,7 +89,7 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
                                 heal_btl_npc = random.randint(40, 100)
                                 cur_safe.execute("UPDATE dungeon_safe SET battle_npc = ?, battle_npc_heal = ? WHERE name = ?", (res_npcfor_btl[1], heal_btl_npc, call.from_user.id,))
                                 db.commit()
-                            else:
+                            if battle == 0:
                                 cur_event.execute("SELECT * FROM dungeon_event WHERE id = ?", (random.randint(1, 2),))
                                 result_event = cur_event.fetchone()
                                 random_ = random.randint(1, min(3, len(result_event)-1))
