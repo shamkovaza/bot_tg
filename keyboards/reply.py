@@ -13,7 +13,8 @@ main = ReplyKeyboardMarkup(
             KeyboardButton(text="Меню игры")
         ],
         [
-            KeyboardButton(text="О боте")
+            KeyboardButton(text="О боте"),
+            KeyboardButton(text="/chatgpt")
         ]
     ],
     resize_keyboard=True,

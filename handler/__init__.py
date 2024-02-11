@@ -1,1 +1,1 @@
-from . import commands, message
+from . import commands, message, chatgpt
