@@ -15,6 +15,8 @@ async def fill_profile(message: Message, state: FSMContext):
     cur = db.cursor()
     cur.execute("SELECT gpt FROM users WHERE name = ?", (message.from_user.id,))
     result = cur.fetchone()
+    if result is None:
+        await message.answer(f"Для этой функции отправте пожалуйста 'Начать игру' чтобы бот смог вас зарегестрировать и попытайтесь снова.")
     if result[0] == 'true':
         await state.set_state(Form.text)
         await message.answer(
