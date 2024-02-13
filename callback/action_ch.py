@@ -101,7 +101,7 @@ async def pagination_handler( call: CallbackQuery, callback_data: fabric.Paginat
                                 is_flirt = random.randint(11, 12)
                                 with suppress(TelegramBadRequest):
                                     await call.message.edit_text(
-                                        f"{result_npc[is_flirt]} \n Потеряли {mood_r} доверия. \n Сейчас оно составляет: {mood} \n Подсказка: Повышайте свой уровень доверия для этого.",
+                                        f"{result_npc[is_flirt]} \n Потеряли {mood_r} доверия. \n Сейчас оно составляет: {mood} \n Подсказка: Повышайте свой уровень доверия для этого дарите персонажам что они хотят.",
                                         reply_markup=fabric.paginator_action_ch()
                                     )
                             else:

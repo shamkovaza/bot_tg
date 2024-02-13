@@ -79,4 +79,3 @@ async def echo(message: Message):
                 await message.answer(f"При выборе персонажа нажмите подтвердить")
         else:
             await message.answer(f"Начните игру /start")
-                

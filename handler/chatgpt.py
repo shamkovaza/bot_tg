@@ -48,7 +48,7 @@ async def form_text(message: Message, state: FSMContext):
         cur.execute("UPDATE users SET gpt = ? WHERE name = ?", ('true', message.from_user.id,))
         db.commit()
     except Exception as e:
-        # Если произошла ошибка, она будет здесь, вы можете обработать ее соответственно
+        print(e)
         await message.answer(f"Произошла ошибка, возможно из-за высокой нагрузки, повторите позже.")
         cur.execute("UPDATE users SET gpt = ? WHERE name = ?", ('true', message.from_user.id,))
         db.commit()
