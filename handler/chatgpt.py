@@ -48,8 +48,16 @@ async def form_text(message: Message, state: FSMContext):
         cur.execute("UPDATE users SET gpt = ? WHERE name = ?", ('true', message.from_user.id,))
         db.commit()
     except Exception as e:
-        print(e)
-        await message.answer(f"Произошла ошибка, возможно из-за высокой нагрузки, повторите позже.")
-        cur.execute("UPDATE users SET gpt = ? WHERE name = ?", ('true', message.from_user.id,))
-        db.commit()
+        try:
+            response = await g4f.ChatCompletion.create_async(
+                model=g4f.models.gpt_35_turbo_16k,
+                messages=[{"role": "user", "content": formatted_text[0]}],
+            ) 
+            await message.answer(response)
+            cur.execute("UPDATE users SET gpt = ? WHERE name = ?", ('true', message.from_user.id,))
+            db.commit()
+        except Exception as e:
+            await message.answer(f"Произошла ошибка, возможно из-за высокой нагрузки, повторите позже.")
+            cur.execute("UPDATE users SET gpt = ? WHERE name = ?", ('true', message.from_user.id,))
+            db.commit()
     db.close()
