@@ -10,6 +10,7 @@ from aiogram import types
 from aiogram.exceptions import TelegramBadRequest
 from contextlib import suppress
 import random
+import g4f
 router = Router()
 @router.callback_query(fabric.PaginationDungeon.filter(F.action.in_(["next", "atack", "heal", "leave"])))
 async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.PaginationDungeon):
@@ -95,18 +96,72 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
                                 random_ = random.randint(1, min(3, len(result_event)-1))
                                 event = result_event[random_].split('; ')
                                 _heal_false = result_safe[2]
+                                proxy_list = ["116.203.28.43:80", "198.176.56.42:80", "51.75.122.80:80"]
+                                random_proxy = random.choice(proxy_list)
+                                request_gpt = "Сочени отрицательное событие от первого лица игрока который встречает что-то или кого-то и теряет уровень здоровье. Локация лес. На русском языке. Аудитория взрослая от 18 лет"
                                 if event[0] == 'false':
                                     _heal_info = random.randint(1, 70)
                                     _heal_false_up = _heal_false - _heal_info
+                                    response = None
                                     cur_safe.execute("UPDATE dungeon_safe SET heal = ? WHERE name = ?", (_heal_false_up, call.from_user.id,))
                                     db.commit()
                                     cur_safe.execute("SELECT * FROM dungeon_safe WHERE name = ?", (call.from_user.id,))
                                     result_safe = cur_safe.fetchone()
-                                    with suppress(TelegramBadRequest):
-                                        await call.message.edit_text(
-                                            f"{event[1]} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
-                                            reply_markup=fabric.paginator_dungeon()
-                                        ) 
+                                    try:
+                                        response = await g4f.ChatCompletion.create_async(
+                                            model=g4f.models.gpt_4,
+                                            messages=[{"role": "user", "content": request_gpt}],
+                                        )
+                                        with suppress(TelegramBadRequest):
+                                            await call.message.edit_text(
+                                                f"{response} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
+                                                reply_markup=fabric.paginator_dungeon()
+                                            ) 
+                                    except Exception as e:
+                                        try:
+                                            response = await g4f.ChatCompletion.create_async(
+                                                model=g4f.models.default,
+                                                messages=[{"role": "user", "content": request_gpt}],
+                                            )
+                                            with suppress(TelegramBadRequest):
+                                                await call.message.edit_text(
+                                                    f"{response} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
+                                                    reply_markup=fabric.paginator_dungeon()
+                                                )
+                                        except Exception as e:
+                                            try:
+                                                response = await g4f.ChatCompletion.create_async(
+                                                    model=g4f.models.gpt_35_turbo,
+                                                    messages=[{"role": "user", "content": request_gpt}],
+                                                )
+                                                with suppress(TelegramBadRequest):
+                                                    await call.message.edit_text(
+                                                        f"{response} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
+                                                        reply_markup=fabric.paginator_dungeon()
+                                                    )
+                                            except Exception as e: 
+                                                try:
+                                                    response = await g4f.ChatCompletion.create_async(
+                                                        model=g4f.models.llama2_70b,
+                                                        messages=[{"role": "user", "content": request_gpt}],
+                                                    )
+                                                    with suppress(TelegramBadRequest):
+                                                        await call.message.edit_text(
+                                                            f"{response} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
+                                                            reply_markup=fabric.paginator_dungeon()
+                                                        )
+                                                except Exception as e:
+                                                    with suppress(TelegramBadRequest):
+                                                        await call.message.edit_text(
+                                                            f"{event[1]} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
+                                                            reply_markup=fabric.paginator_dungeon()
+                                                        ) 
+                                    if response == '' or response == None:
+                                        with suppress(TelegramBadRequest):
+                                            await call.message.edit_text(
+                                                f"{event[1]} \n Вы потеряли {_heal_info} \n Ваш уровень здоровья {result_safe[2]}",
+                                                reply_markup=fabric.paginator_dungeon()
+                                            ) 
                                 else:
                                     items_event = random.randint(1, 2)
                                     if items_event == 1:
@@ -126,11 +181,62 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
                                     if items_event == 2:
                                         rand_item_for = ['Лунный камень', 'Лесной сапфир', 'Корни жизни']
                                         random_element = random.choice(rand_item_for)
-                                        with suppress(TelegramBadRequest):
-                                            await call.message.edit_text(
-                                                f"{event[1]} \n Вы нашли {random_element}",
-                                                reply_markup=fabric.paginator_dungeon()
-                                            ) 
+                                        try:
+                                            response = await g4f.ChatCompletion.create_async(
+                                                model=g4f.models.gpt_4,
+                                                messages=[{"role": "user", "content": "Составь положительное событие от первого лица на русском языке когда игрок встречает что-то или кого-то и получает предмет но сам предмет не называй. Локация лес. Аудитория взрослая от 18 лет. Без примечаний."}],
+                                            )
+                                            with suppress(TelegramBadRequest):
+                                                await call.message.edit_text(
+                                                    f"{response} \n Вы нашли {random_element}",
+                                                    reply_markup=fabric.paginator_dungeon()
+                                                )
+                                        except Exception as e:
+                                            try:
+                                                response = await g4f.ChatCompletion.create_async(
+                                                    model=g4f.models.gpt_35_turbo_16k,
+                                                    messages=[{"role": "user", "content": "Составь положительное событие от первого лица когда игрок встречает что-то или кого-то и получает предмет но сам предмет не называй. Локация лес. Аудитория взрослая от 18 лет. Без примечаний."}],
+                                                )
+                                                with suppress(TelegramBadRequest):
+                                                    await call.message.edit_text(
+                                                        f"{response} \n Вы нашли {random_element}",
+                                                        reply_markup=fabric.paginator_dungeon()
+                                                    ) 
+                                            except Exception as e:
+                                                try:
+                                                    response = await g4f.ChatCompletion.create_async(
+                                                        model=g4f.models.gpt_4,
+                                                        messages=[{"role": "user", "content": "Составь положительное событие от первого лица когда игрок встречает что-то или кого-то и получает предмет но сам предмет не называй. Локация лес. Аудитория взрослая от 18 лет. Без примечаний."}],
+                                                        proxy="http://74.48.78.52:80"
+                                                    )
+                                                    with suppress(TelegramBadRequest):
+                                                        await call.message.edit_text(
+                                                            f"{response} \n Вы нашли {random_element}",
+                                                            reply_markup=fabric.paginator_dungeon()
+                                                        ) 
+                                                except Exception as e:
+                                                    try:
+                                                        response = await g4f.ChatCompletion.create_async(
+                                                            model=g4f.models.llama2_70b,
+                                                            messages=[{"role": "user", "content": "Составь положительное событие от первого лица когда игрок встречает что-то или кого-то и получает предмет но сам предмет не называй. Локация лес. Аудитория взрослая от 18 лет. Без примечаний."}],
+                                                        )
+                                                        with suppress(TelegramBadRequest):
+                                                            await call.message.edit_text(
+                                                                f"{response} \n Вы нашли {random_element}",
+                                                                reply_markup=fabric.paginator_dungeon()
+                                                            ) 
+                                                    except Exception as e:
+                                                        with suppress(TelegramBadRequest):
+                                                            await call.message.edit_text(
+                                                                f"{event[1]} \n Вы нашли {random_element}",
+                                                                reply_markup=fabric.paginator_dungeon()
+                                                            ) 
+                                        if response == '' or response == None:
+                                            with suppress(TelegramBadRequest):
+                                                await call.message.edit_text(
+                                                    f"{event[1]} \n Вы нашли {random_element}",
+                                                    reply_markup=fabric.paginator_dungeon()
+                                                ) 
                                         cur.execute("SELECT items FROM users WHERE name = ?", (call.from_user.id,))
                                         res_item = cur.fetchone()
                                         res_item = list(res_item)
