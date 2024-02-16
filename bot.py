@@ -3,6 +3,8 @@ from aiogram import Bot, Dispatcher, Router
 from handler import commands, message, chatgpt
 from callback import pagination, choose_npc, action_ch, dyngeon, rem_bf
 import os
+from aiohttp import BasicAuth
+from aiogram.client.session.aiohttp import AiohttpSession
 from dotenv import load_dotenv
 load_dotenv()
 
