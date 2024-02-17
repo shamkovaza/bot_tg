@@ -15,13 +15,11 @@ router = Router()
 async def run_provider_false(formatted_text):
     try:
         response = await g4f.ChatCompletion.create_async(
-            model=g4f.models.gpt_4,
-            proxy="http://5191.243.46.30:43241",
+            model=g4f.models.llama2_7b,
             messages=[{"role": "user", "content": formatted_text[0]}],
         )
-        print(response)
     except Exception as e:
-        print(e)
+        pass
 
 @router.message(Command("chatgpt"))
 async def fill_profile(message: Message, state: FSMContext):
@@ -56,11 +54,17 @@ async def form_text(message: Message, state: FSMContext):
     proxy_list = ["116.203.28.43:80", "198.176.56.42:80", "51.75.122.80:80"]
     random_proxy = random.choice(proxy_list)
     try:
-        asyncio.run(run_provider_false(formatted_text))
+        response = await g4f.ChatCompletion.create_async(
+            model=g4f.models.gpt_4,
+            messages=[{"role": "user", "content": formatted_text[0]}],
+        )
+        await message.answer(response)
+        cur.execute("UPDATE users SET gpt = ? WHERE name = ?", ('true', message.from_user.id,))
+        db.commit()
     except Exception as e:
         try:
             response = await g4f.ChatCompletion.create_async(
-                model=g4f.models.gpt_4,
+                model=g4f.models.gpt_4_turbo,
                 messages=[{"role": "user", "content": "Привет"}]
             ) 
             await message.answer(response)

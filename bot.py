@@ -1,6 +1,6 @@
 import asyncio
 from aiogram import Bot, Dispatcher, Router
-from handler import commands, message, chatgpt
+from handler import commands, message, chatgpt, sendphoto
 from callback import pagination, choose_npc, action_ch, dyngeon, rem_bf
 import os
 from aiohttp import BasicAuth
@@ -20,6 +20,7 @@ async def main():
         dyngeon.router,
         rem_bf.router,
         chatgpt.router,
+        sendphoto.router,
         message.router
     )
 

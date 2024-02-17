@@ -14,7 +14,8 @@ main = ReplyKeyboardMarkup(
         ],
         [
             KeyboardButton(text="О боте"),
-            KeyboardButton(text="/chatgpt")
+            KeyboardButton(text="/chatgpt"),
+            KeyboardButton(text="/photo")
         ]
     ],
     resize_keyboard=True,

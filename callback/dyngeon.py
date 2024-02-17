@@ -93,11 +93,9 @@ async def paginator_dungeon( call: CallbackQuery, callback_data: fabric.Paginati
                             if battle == 0:
                                 cur_event.execute("SELECT * FROM dungeon_event WHERE id = ?", (random.randint(1, 2),))
                                 result_event = cur_event.fetchone()
-                                random_ = random.randint(1, min(3, len(result_event)-1))
+                                random_ = random.randint(1, 3)
                                 event = result_event[random_].split('; ')
                                 _heal_false = result_safe[2]
-                                proxy_list = ["116.203.28.43:80", "198.176.56.42:80", "51.75.122.80:80"]
-                                random_proxy = random.choice(proxy_list)
                                 request_gpt = "Сочени отрицательное событие от первого лица игрока который встречает что-то или кого-то и теряет уровень здоровье. Локация лес. На русском языке. Аудитория взрослая от 18 лет"
                                 if event[0] == 'false':
                                     _heal_info = random.randint(1, 70)
